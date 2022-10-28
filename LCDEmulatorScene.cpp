@@ -11,9 +11,8 @@
 
 #include "LCDEmulatorScene.hpp"
 
-LCDEmulatorScene::LCDEmulatorScene(Hephaestus *_engine) {
+LCDEmulatorScene::LCDEmulatorScene() {
     this->lcd = LCD();
-    engine = _engine;
 
     for(int x = 0; x < lcd.screenSizeX; x++) {
         for (int y = 0; y < lcd.screenSizeY; y++) {
@@ -27,8 +26,8 @@ LCDEmulatorScene::LCDEmulatorScene(Hephaestus *_engine) {
         }
     }
 
-    scene.setCollisionsEnabled(false);
     scene.setPhysicsEnabled(false);
+    scene.setCollisionsEnabled(false);
 
     scene.setInit([this] { init(); });
     scene.setDestroy([this] { destroy(); });

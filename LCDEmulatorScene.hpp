@@ -26,7 +26,7 @@ class LCDEmulatorScene {
     void updateScreen(unsigned char*);
 
 public:
-    explicit LCDEmulatorScene(Hephaestus *_engine);
+    LCDEmulatorScene();
     uint8_t* bitMap;
 
     Scene scene = Scene();

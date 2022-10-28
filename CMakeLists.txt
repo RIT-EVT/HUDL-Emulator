@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.23)
 project(HudlEmulator)
 
 set(CMAKE_CXX_STANDARD 14)
-set(HEPHAESTUS_DIR ./libs/Hephaestus/Hephaestus/)
+set(HEPHAESTUS_DIR ./libs/Hephaestus/)
 
 add_executable(HudlEmulator main.cpp LCDEmulatorScene.cpp LCDEmulatorScene.hpp "LCD Emulator/LCD.cpp" "LCD Emulator/LCD.hpp" BitMapFont.hpp)
 

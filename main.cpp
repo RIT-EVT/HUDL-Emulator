@@ -2,7 +2,7 @@
 #include <Hephaestus/Hephaestus.hpp>
 #include "LCDEmulatorScene.hpp"
 
-Hephaestus engine = Hephaestus("EVT HUDL Display", 1280, 720);
+Hephaestus engine = Hephaestus("EVT HUDL Display", 1280, 640);
 
 int main() {
     uint8_t bitMap[8192] = {
@@ -74,7 +74,7 @@ int main() {
 
 //    uint8_t bitMap[8] = {0x36, 0x36, 0x7F, 0x36, 0x7F, 0x36, 0x36, 0x00};   // U+0023 (#)
 
-    LCDEmulatorScene mainLevel = LCDEmulatorScene(&engine);
+    LCDEmulatorScene mainLevel = LCDEmulatorScene();
     mainLevel.bitMap = bitMap;
     engine.openScene(&mainLevel.scene);
     engine.startWindowLoop();

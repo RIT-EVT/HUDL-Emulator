@@ -118,7 +118,6 @@ void LCD::displayMap(unsigned char* bitMap) {
             bitMap++;                       // Advance the bitmap pointer by one. This means we can just grab the last one the next loop.
         }
 
-        std::cout << "Progress Page" << std::endl;
         page++; //after 128 columns, go to next page
     }
     this->commWrite(0xAF);
