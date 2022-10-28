@@ -2,12 +2,11 @@ cmake_minimum_required(VERSION 3.23)
 project(HudlEmulator)
 
 set(CMAKE_CXX_STANDARD 14)
-set(HEPHAESTUS_DIR /Users/zacharylineman/Developer/GitHub/Hephaestus/Hephaestus)
-set(EVT_CORE_DIR /Users/zacharylineman/Developer/RIT-EVT/EVT-core )
+set(HEPHAESTUS_DIR ./libs/Hephaestus/Hephaestus/)
 
 add_executable(HudlEmulator main.cpp LCDEmulatorScene.cpp LCDEmulatorScene.hpp "LCD Emulator/LCD.cpp" "LCD Emulator/LCD.hpp" BitMapFont.hpp)
 
-add_subdirectory(${HEPHAESTUS_DIR} ./libs/Hephaestus)
+add_subdirectory(${HEPHAESTUS_DIR})
 target_link_libraries(HudlEmulator Hephaestus)
 #
 ### Link to the EVT-core library
