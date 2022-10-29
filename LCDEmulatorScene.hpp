@@ -23,8 +23,6 @@ class LCDEmulatorScene {
     void tick();
     void update();
     void render();
-    void updateScreen(unsigned char*);
-
 public:
     LCDEmulatorScene();
     uint8_t* bitMap;

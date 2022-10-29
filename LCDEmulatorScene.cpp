@@ -54,9 +54,8 @@ void LCDEmulatorScene::tick() {
 }
 
 void LCDEmulatorScene::update() {
-    string text = "Hello World!";
-    lcd.displayMap(bitMap);
-//    lcd.displayBitMap(bitMap, 8, 8, 0xB0, 0);
+    const char* text =  "Hello World!";
+    lcd.writeText(text, 0, 0);
 }
 
 void LCDEmulatorScene::render() {
