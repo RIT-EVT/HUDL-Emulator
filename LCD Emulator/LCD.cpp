@@ -70,13 +70,17 @@ void LCD::commandWrite(uint8_t data) {
     }
 }
 
-void LCD::drivePixel(uint8_t page, uint8_t col_up, uint8_t col_low, uint8_t data) {
-    this->commandWrite(0x40);          //line to start writing on (0 -> 64) moves set bits with it DO NOT CHANGE
-    this->commandWrite(0xB0 + page);   //writes the page address (4 bits, 8 rows selected by values 0-7 )
+void LCD::driveColumn(uint8_t page, uint8_t col_up, uint8_t col_low, uint8_t data) {
+    this->commandWrite(0xAE);         //Display OFF
+
+    this->commandWrite(0x40);         //line to start writing on (0 -> 64) moves set bits with it DO NOT CHANGE
+    this->commandWrite(0xB0 + page);  //writes the page address (4 bits, 8 rows selected by values 0-7 )
     this->commandWrite(0x10 + col_up); //writes the first 4 bits of the column select (out of 8 bits)
     this->commandWrite(0x00 + col_low);//writes the second 4 bits of the column select (out)
 
     this->dataWrite(data);
+
+    this->commandWrite(0xAF);
     /*
      * writes 8 vertical bits based on value between 0-255 based on bits set ex: 01001100(0x4C) is
      * |WHITE|
@@ -161,20 +165,19 @@ void LCD::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHei
 void LCD::writeText(const char* text, uint8_t page, uint8_t column) {
     for(int x = 0; x < strlen(text); x ++) {
         int fontIndex = (int) ((unsigned char) text[x]);
+//        int fontIndex = 72;
 
-        unsigned char characterMap[8] = {
-                BitMapFont::font8x8_basic[fontIndex][0],
-                BitMapFont::font8x8_basic[fontIndex][1],
-                BitMapFont::font8x8_basic[fontIndex][2],
-                BitMapFont::font8x8_basic[fontIndex][3],
-                BitMapFont::font8x8_basic[fontIndex][4],
-                BitMapFont::font8x8_basic[fontIndex][5],
-                BitMapFont::font8x8_basic[fontIndex][6],
-                BitMapFont::font8x8_basic[fontIndex][7],
+//        std::cout << fontIndex << " " << text[x] << std::endl;
+        unsigned char characterMap[4] = {
+                BitMapFont::font4x6[fontIndex][0],
+                BitMapFont::font4x6[fontIndex][1],
+                BitMapFont::font4x6[fontIndex][2],
+                BitMapFont::font4x6[fontIndex][3],
         };
+//        uint8_t characterMap[4] = { 0x0,0xE,0x10,0x3E, };
 
-        displayBitMap(characterMap, 8, 8, page, column);
-        column += 8;
+        displayBitMap(characterMap, 4, 8, page, column);
+        column += 4;
     }
 }
 
@@ -206,10 +209,8 @@ void LCD::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column)
     this->commandWrite(0xAF);
 }
 
-
-void LCD::addBoundingBox(uint8_t minX, uint8_t minX, uint8_t maxY) {
-    lastBoundingBox ++;
-    boundingBoxes[lastBoundingBox] = GraphicsBoundingBox()
+void LCD::addBoundingBox(uint8_t minX, uint8_t maxX, uint8_t minY, uint8_t maxY) {
+    boundingBoxes.emplace_back(GraphicsBoundingBox(minX, maxX, minY, maxY));
 }
 
 void LCD::drawSquare(uint8_t width, uint8_t height, uint8_t x, uint8_t y) {
@@ -219,19 +220,24 @@ void LCD::drawSquare(uint8_t width, uint8_t height, uint8_t x, uint8_t y) {
             internalBitMap[index] = 0xFF;
         }
     }
-    addBoundingBox(x, )
+    addBoundingBox(x, x + width, y, y + height);
 }
 
 void LCD::renderBoxes() {
-    for(pair<uint8_t, uint8_t> box: boundingBoxes) {
-        int minX = box.first;
-        int maxY = box.second;
+    for(GraphicsBoundingBox box: boundingBoxes) {
+        for (uint8_t n = box.minY; n < box.maxY; n ++) {
+            int index = (screenSizeX * n) + box.minX;
+            for (uint8_t i = 0; i < box.maxX - box.minX; i ++) {
+                uint8_t columnUpperAddress = i;
+                columnUpperAddress >>= 4;
 
-        for (int n = 0; n < y; n ++) {
-            int index = (screenSizeX * n) + x;
-            for (int i = 0; i < width; i ++) {
-                internalBitMap[index] = 0xFF;
+                uint8_t columnLowerAddress = i;
+                columnLowerAddress <<= 4;
+                columnLowerAddress >>= 4;
+
+                driveColumn(n, columnUpperAddress, columnLowerAddress, internalBitMap[index]);
             }
         }
     }
+    boundingBoxes.clear();
 }

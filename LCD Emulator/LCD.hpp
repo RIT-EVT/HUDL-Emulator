@@ -9,10 +9,18 @@
 #include "../BitMapFont.hpp"
 
 class GraphicsBoundingBox {
+public:
     uint8_t minX;
     uint8_t maxX;
     uint8_t minY;
     uint8_t maxY;
+
+    GraphicsBoundingBox(uint8_t minX, uint8_t maxX, uint8_t minY, uint8_t maxY) {
+        this->minX = minX;
+        this->maxX = maxX;
+        this->minY = minY;
+        this->maxY = maxY;
+    }
 };
 
 /*
@@ -49,7 +57,7 @@ public:
      * @param[in] colUp Bits to write to the page address
      * @param[in] colLow Bits to write to the column select
      */
-    void drivePixel(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
+    void driveColumn(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data);
 
     /**
      * Clears the LCD, changes are mirrored in the bitmap
@@ -75,8 +83,11 @@ public:
     void initLCD();
 
     void drawSquare(uint8_t width, uint8_t height, uint8_t x, uint8_t y);
+
+    void renderBoxes();
+
 private:
-    GraphicsBoundingBox boundingBoxes[1024];
+    vector<GraphicsBoundingBox> boundingBoxes = {};
 
     uint8_t internalBitMap[8192] = {
             0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -151,9 +162,7 @@ private:
     /// writes commands to the LCD
     void commandWrite(uint8_t data);
 
-    int lastBoundingBox = 0;
-    void addBoundingBox(uint8_t minX, uint8_t maxY);
-    void renderBoxes();
+    void addBoundingBox(uint8_t minX, uint8_t maxX, uint8_t minY, uint8_t maxY);
 
     // Emulation Values
     uint8_t emulationPageOffset = 176;

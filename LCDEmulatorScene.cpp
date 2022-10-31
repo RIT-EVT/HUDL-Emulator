@@ -56,6 +56,8 @@ void LCDEmulatorScene::tick() {
 void LCDEmulatorScene::update() {
     const char* text =  "Hello World!";
     lcd.writeText(text, 0, 0);
+//    lcd.drawSquare(0,0,8,8);
+//    lcd.renderBoxes();
 }
 
 void LCDEmulatorScene::render() {
