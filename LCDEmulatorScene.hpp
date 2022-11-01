@@ -8,10 +8,12 @@
 #include <Hephaestus/Camera/Camera.hpp>
 #include <Hephaestus/Sprite/Sprite.hpp>
 #include "LCD Emulator/LCD.hpp"
+#include "Graphics Library/Graphics.hpp"
 
 class LCDEmulatorScene {
     Hephaestus* engine;
     LCD lcd;
+    Graphics graphics = Graphics(nullptr);
     const int spriteSize = 10;
 
     int interval = 0;

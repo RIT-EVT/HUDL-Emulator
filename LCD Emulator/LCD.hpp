@@ -6,7 +6,6 @@
 #define HUDLEMULATOR_LCD_HPP
 
 #include <Hephaestus/Sprite/Sprite.hpp>
-#include "../BitMapFont.hpp"
 
 class GraphicsBoundingBox {
 public:
@@ -76,8 +75,6 @@ public:
     void displayMap(const uint8_t* bitMap);
 
     void displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column);
-
-    void writeText(const char* text, uint8_t page, uint8_t column);
 
     /// initializes the LCD for operation (must be called to use the LCD)
     void initLCD();

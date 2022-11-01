@@ -162,25 +162,6 @@ void LCD::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHei
     this->commandWrite(0xAF);
 }
 
-void LCD::writeText(const char* text, uint8_t page, uint8_t column) {
-    for(int x = 0; x < strlen(text); x ++) {
-        int fontIndex = (int) ((unsigned char) text[x]);
-//        int fontIndex = 72;
-
-//        std::cout << fontIndex << " " << text[x] << std::endl;
-        unsigned char characterMap[4] = {
-                BitMapFont::font4x6[fontIndex][0],
-                BitMapFont::font4x6[fontIndex][1],
-                BitMapFont::font4x6[fontIndex][2],
-                BitMapFont::font4x6[fontIndex][3],
-        };
-//        uint8_t characterMap[4] = { 0x0,0xE,0x10,0x3E, };
-
-        displayBitMap(characterMap, 4, 8, page, column);
-        column += 4;
-    }
-}
-
 void LCD::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column) {
     unsigned int i, j;
     uint8_t columnUpperAddress = column;

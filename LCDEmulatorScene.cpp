@@ -13,6 +13,14 @@
 
 LCDEmulatorScene::LCDEmulatorScene() {
     this->lcd = LCD();
+    this->graphics = Graphics(&lcd);
+
+    const char* titles[9] = {
+            "Voltage", "Battery %", "KW/H",
+            "Voltage", "Battery %", "KW/H",
+            "Voltage", "Battery %", "KW/H",
+    };
+    graphics.setDefaultSections(titles);
 
     for(int x = 0; x < lcd.screenSizeX; x++) {
         for (int y = 0; y < lcd.screenSizeY; y++) {
@@ -55,7 +63,8 @@ void LCDEmulatorScene::tick() {
 
 void LCDEmulatorScene::update() {
     const char* text =  "Hello World!";
-    lcd.writeText(text, 0, 0);
+    graphics.displaySectionHeaders();
+    graphics.setTextForSection(5, "Test");
 //    lcd.drawSquare(0,0,8,8);
 //    lcd.renderBoxes();
 }
