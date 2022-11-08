@@ -4,10 +4,26 @@ project(HudlEmulator)
 set(CMAKE_CXX_STANDARD 14)
 set(HEPHAESTUS_DIR ./libs/Hephaestus/)
 
-add_executable(HudlEmulator main.cpp LCDEmulatorScene.cpp LCDEmulatorScene.hpp "LCD Emulator/LCD.cpp" "LCD Emulator/LCD.hpp" BitMapFont.hpp "Graphics Library/Graphics.cpp" "Graphics Library/Graphics.hpp")
+add_executable(HudlEmulator main.cpp "LCD Emulator/LCD.cpp" "LCD Emulator/LCD.hpp" "LCD Emulator/BitMapFont.hpp" GUI/Window.cpp GUI/Window.hpp GUI/Shader.cpp GUI/Shader.hpp GUI/Sprite.cpp GUI/Sprite.hpp GUI/stb_image.hpp GUI/Camera.cpp GUI/Camera.cpp)
 
-add_subdirectory(${HEPHAESTUS_DIR})
-target_link_libraries(HudlEmulator Hephaestus)
+# Handle Dependencies
+if(UNIX AND NOT APPLE)
+    find_package(OpenGL REQUIRED)
+
+    target_link_libraries(${PROJECT_NAME}
+            PUBLIC OpenGL
+            )
+endif()
+
+find_package(glm REQUIRED)
+find_package(glfw3 REQUIRED)
+find_package(GLEW REQUIRED)
+
+target_link_libraries(${PROJECT_NAME}
+        PUBLIC glfw
+        PUBLIC GLEW::GLEW
+        PUBLIC glm::glm
+        )
 #
 ### Link to the EVT-core library
 #add_subdirectory(${EVT_CORE_DIR} ./libs/EVT-Core)
