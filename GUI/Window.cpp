@@ -65,7 +65,6 @@ void Window::startWindowLoop() {
 void Window::addSprite(Sprite *sprite) {
     sprite->updateScreenDimensions(width, height);
 
-    sprite->camera = currentCamera;
     sprite->shader = defaultSpriteShader;
     sprites.push_back(sprite);
 }

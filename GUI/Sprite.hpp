@@ -26,7 +26,6 @@
 #include <GL/glew.h>
 
 #include "Shader.hpp"
-#include "Camera.hpp"
 
 class Sprite {
 public:
@@ -77,10 +76,6 @@ public:
     Shader shader;
 
     bool hidden = false;
-
-    Camera* camera;
-
-
 private:
     glm::mat4 projection { };
     glm::vec2 screenSize { };

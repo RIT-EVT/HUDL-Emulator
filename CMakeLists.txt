@@ -4,7 +4,7 @@ project(HudlEmulator)
 set(CMAKE_CXX_STANDARD 14)
 set(HEPHAESTUS_DIR ./libs/Hephaestus/)
 
-add_executable(HudlEmulator main.cpp "LCD Emulator/LCD.cpp" "LCD Emulator/LCD.hpp" "LCD Emulator/BitMapFont.hpp" GUI/Window.cpp GUI/Window.hpp GUI/Shader.cpp GUI/Shader.hpp GUI/Sprite.cpp GUI/Sprite.hpp GUI/stb_image.hpp GUI/Camera.cpp GUI/Camera.cpp)
+add_executable(HudlEmulator main.cpp "LCD Emulator/LCD.cpp" "LCD Emulator/LCD.hpp" "LCD Emulator/BitMapFont.hpp" GUI/Window.cpp GUI/Window.hpp GUI/Shader.cpp GUI/Shader.hpp GUI/Sprite.cpp GUI/Sprite.hpp GUI/stb_image.hpp)
 
 # Handle Dependencies
 if(UNIX AND NOT APPLE)

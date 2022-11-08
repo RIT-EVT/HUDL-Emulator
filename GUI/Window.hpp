@@ -57,7 +57,6 @@ void main()
     Shader defaultSpriteShader = Shader("Scene Sprite Shader", defaultVertexShader, defaultFragmentShader);
 public:
     Window();
-    Camera* currentCamera{};
 
     void addSprite(Sprite* sprite);
 

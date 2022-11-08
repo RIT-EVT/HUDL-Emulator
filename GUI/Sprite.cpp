@@ -124,7 +124,9 @@ void Sprite::draw() {
     model = scale(model, glm::vec3(dimensions, 1.0f));
     model = glm::translate(model, glm::vec3(0.5f, 0.5f, 0.0f));
 
-    glm::mat4 view = camera->getView();
+    glm::vec3 cameraPosition {0.0f, 0.0f, 3.0f};
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, cameraPosition);
 
     shader.setMatrix4("model", model);
     shader.setMatrix4("view", view);
