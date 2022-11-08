@@ -1,5 +1,5 @@
 # HUDL-Emulator
-An emulator for the EVT-HUDL device. Very rudementray and does not actually emualte the full device. Just enough functionaility for the emulator to display data.
+An emulator for the EVT-HUDL device. Very rudimentary and does not actually emulate the full device. Just enough functionality for the emulator to display data.
 
 ## Install Directions
 To install and run the emulator, you need a few libraries.
