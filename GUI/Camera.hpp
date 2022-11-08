@@ -28,17 +28,6 @@ public:
     glm::vec3 rotation {0.0f, 0.0f, 0.0f};
     glm::vec3* target;
 
-    bool isUICamera = false;
-
-    void setPosition(glm::vec3 newPosition);
-    glm::vec3 getPosition();
-
-    void setRotation(glm::vec3 newRotation);
-    glm::vec3 getRotation();
-
-    void setTarget(glm::vec3* newTarget);
-    glm::vec3* getTarget();
-
     glm::mat4 getView();
 };
 

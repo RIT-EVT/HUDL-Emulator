@@ -146,3 +146,21 @@ void Sprite::updateScreenDimensions(int width, int height) {
     projection = glm::ortho(0.0f, screenSize.x, 0.0f, screenSize.y, -1000.0f, 1000.0f);
     createVirtualBufferObject();
 }
+
+GLint Sprite::translateSamplingType(Sprite::SamplingType samplingType) {
+    switch(samplingType) {
+        case nearest:
+            return GL_NEAREST;
+        case linear:
+            return GL_LINEAR;
+        case nearestMipMapNearest:
+            return GL_NEAREST_MIPMAP_NEAREST;
+        case linearMipMapNearest:
+            return GL_LINEAR_MIPMAP_NEAREST;
+        case nearestMipmapLinear:
+            return GL_NEAREST_MIPMAP_LINEAR;
+        case linearMipmapLinear:
+            return GL_LINEAR_MIPMAP_LINEAR;
+    }
+    return GL_LINEAR;
+}

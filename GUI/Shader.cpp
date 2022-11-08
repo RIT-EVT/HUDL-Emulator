@@ -111,8 +111,7 @@ void Shader::setup() {
     glCompileShader(vs);
 
     glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
+    if(!success) {
         glGetShaderInfoLog(vs, 512, NULL, infoLog);
         std::cout << "ERROR: Vertex Shader Compilation Failed: " << identifier.c_str() << "\n" << infoLog << std::endl;
     } else {
@@ -125,8 +124,7 @@ void Shader::setup() {
     glShaderSource(fs, 1, &fragmentShader, NULL);
     glCompileShader(fs);
     glGetShaderiv(fs, GL_COMPILE_STATUS, &success2);
-    if(!success)
-    {
+    if(!success) {
         glGetShaderInfoLog(vs, 512, NULL, infoLog2);
         std::cout << "ERROR: Fragment Shader Compilation Failed: " << identifier.c_str() << "\n" << infoLog2 << std::endl;
     } else {

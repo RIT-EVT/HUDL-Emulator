@@ -30,8 +30,6 @@
 
 class Sprite {
 public:
-
-    enum PositioningType { absolute, relative };
     enum SamplingType { nearest, linear, nearestMipMapNearest, linearMipMapNearest, nearestMipmapLinear, linearMipmapLinear};
 
     Sprite(std::string id, std::string texturePath, SamplingType samplingType, glm::vec3 position = {300.0f, 300.0f, 0.0f}, glm::vec2 dimensions = {50.0f, 50.0f}, glm::vec3 rotation = {0.0f, 0.0f, 0.0f});
@@ -81,7 +79,9 @@ public:
     bool hidden = false;
 
     Camera* camera;
-protected:
+
+
+private:
     glm::mat4 projection { };
     glm::vec2 screenSize { };
 
@@ -90,24 +90,7 @@ protected:
 
     GLuint VBO, VAO, EBO, textureAtlas;
 
-    static inline GLint translateSamplingType(SamplingType samplingType) {
-        switch(samplingType) {
-            case nearest:
-                return GL_NEAREST;
-            case linear:
-                return GL_LINEAR;
-            case nearestMipMapNearest:
-                return GL_NEAREST_MIPMAP_NEAREST;
-            case linearMipMapNearest:
-                return GL_LINEAR_MIPMAP_NEAREST;
-            case nearestMipmapLinear:
-                return GL_NEAREST_MIPMAP_LINEAR;
-            case linearMipmapLinear:
-                return GL_LINEAR_MIPMAP_LINEAR;
-        }
-        return GL_LINEAR;
-    }
-
+    static GLint translateSamplingType(SamplingType samplingType);
 };
 
 #endif //OLYMPUS_SPRITE_HPP

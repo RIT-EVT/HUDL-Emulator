@@ -40,7 +40,7 @@ int main() {
     for(int x = 0; x < LCD::screenSizeX; x++) {
         for (int y = 0; y < LCD::screenSizeY; y++) {
             auto position = glm::vec3(x * spriteSize, y * spriteSize, 0.0);
-            lcd.screen[x][y] = Sprite{"_", "./Images/Black.png",
+            lcd.screen[x][y] = Sprite{"_", "./Images/White.png",
                                       Sprite::SamplingType::linear,
                                       position,
                                       glm::vec2(spriteSize,spriteSize)};
