@@ -31,7 +31,6 @@ void update() {
 
 int main() {
     Window mainWindow = Window();
-    mainWindow.currentCamera = &camera;
     mainWindow.update = update;
 
     init();
