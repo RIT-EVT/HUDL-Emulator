@@ -13,9 +13,11 @@
 #include "GUI/Window.hpp"
 #include "GUI/Sprite.hpp"
 
+#include "LCD Emulator/Graphics.hpp"
 #include "LCD Emulator/LCD.hpp"
 
 LCD lcd = LCD();
+Graphics graphics = Graphics(lcd);
 
 void init() {
     const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
@@ -36,7 +38,8 @@ void update() {
 //    lcd.displaySectionHeaders();
 //    lcd.setTextForSection(0, "3.2 v");
 //    lcd.setTextForSection(1, "85%");
-    lcd.writeText(text, 0, 0, true);
+//    writeText(text, 0, 0, true);
+    graphics.writeText(text, 0 ,0, true);
 }
 
 int main() {
