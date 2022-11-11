@@ -1,12 +1,12 @@
 /*
-    Sprite.cpp
-    Zachary lineman
-    11/3/21
-    
-    =================
-    Implementations for the Sprite.hpp class.
-    =================
-*/
+ * Sprite.cpp
+ * Implementations for the Sprite.hpp class.
+ *
+ * This code is derived from https://github.com/ActuallyZach/Hephaestus.
+ *
+ * Created by Zachary Lineman on 11/3/21.
+ */
+
 #define STB_IMAGE_IMPLEMENTATION
 #define GLM_ENABLE_EXPERIMENTAL
 

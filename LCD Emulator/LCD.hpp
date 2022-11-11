@@ -1,11 +1,14 @@
-//
-// Created by Zachary Lineman on 10/24/22.
-//
+/*
+ * LCD.hpp
+ * This file declares the LCD class. This is almost exactly the same as the version present in EVT-Core
+ *
+ * Created by Zachary Lineman on 10/24/22.
+ */
 
 #ifndef HUDLEMULATOR_LCD_HPP
 #define HUDLEMULATOR_LCD_HPP
 
-#include "BitMapFont.hpp"
+#include "BitmapFont.hpp"
 #include "../GUI/Sprite.hpp"
 
 /*
@@ -14,8 +17,8 @@
 */
 class LCD {
 public:
-    static const int screenSizeX = 128;
-    static const int screenSizeY = 64;
+    static const uint8_t screenSizeX = 128;
+    static const uint8_t screenSizeY = 64;
     /// bit map to display the LCD's current state
     Sprite screen[screenSizeX][screenSizeY];
 
@@ -62,7 +65,7 @@ public:
 
     void displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column);
 
-    void writeText(const char* text, uint8_t page, uint8_t column);
+    void writeText(const char* text, uint8_t page, uint8_t column, bool wrapText);
     void setDefaultSections(char* newSectionTitles[9]);
     void displaySectionHeaders();
     void setTextForSection(uint8_t section, const char* text);

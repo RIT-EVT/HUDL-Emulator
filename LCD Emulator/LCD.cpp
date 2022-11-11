@@ -1,6 +1,9 @@
-//
-// Created by Zachary Lineman on 10/24/22.
-//
+/*
+ * LCD.cpp
+ * This file declares the code for the LCD class. This is almost exactly the same as the version present in EVT-Core
+ *
+ * Created by Zachary Lineman on 10/24/22.
+ */
 
 #include "LCD.hpp"
 #include <iostream>
@@ -189,21 +192,26 @@ void LCD::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHei
 
 }
 
-void LCD::writeText(const char *text, uint8_t page, uint8_t column) {
+void LCD::writeText(const char *text, uint8_t page, uint8_t column, bool wrapText) {
     for(int x = 0; x < strlen(text); x ++) {
         int fontIndex = (int) ((unsigned char) text[x]);
 
         unsigned char characterMap[4] = {
-                BitMapFont::font4x6[fontIndex][0],
-                BitMapFont::font4x6[fontIndex][1],
-                BitMapFont::font4x6[fontIndex][2],
-                BitMapFont::font4x6[fontIndex][3],
+                BitmapFont::font4x6[fontIndex][0],
+                BitmapFont::font4x6[fontIndex][1],
+                BitmapFont::font4x6[fontIndex][2],
+                BitmapFont::font4x6[fontIndex][3],
         };
 
         if (column >= screenSizeX) return;
 
         displayBitMap(characterMap, 4, 8, page, column);
         column += 4;
+
+        if (wrapText && column >= screenSizeX) {
+            page ++;
+            column = 0;
+        }
     }
 }
 
@@ -227,7 +235,7 @@ void LCD::displaySectionHeaders() {
 
         column += padding;
 
-        writeText(title, page, column);
+        writeText(title, page, column, false);
 
         column += length;
         column += padding;
@@ -257,5 +265,5 @@ void LCD::setTextForSection(uint8_t section, const char* text) {
 
     sectionColumn += padding;
 
-    writeText(text, sectionPage, sectionColumn);
+    writeText(text, sectionPage, sectionColumn, false);
 }

@@ -1,12 +1,11 @@
 /*
-    Shader.cpp
-    Zachary lineman
-    11/3/21
-    
-    =================
-    DESCRIPTION
-    =================
-*/
+ * Shader.cpp
+ * Implementation for the Shader abstraction
+ *
+ * This code is derived from https://github.com/ActuallyZach/Hephaestus.
+ *
+ * Created by Zachary Lineman on 11/3/21.
+ */
 
 #include "Shader.hpp"
 

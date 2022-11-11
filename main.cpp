@@ -1,12 +1,21 @@
+/*
+ * This is an emulator for the HUDL device on the RIT-EVT motorcycles.
+ * It works by translating the write commands that you would normally send to the lcd
+ * into instructions on where to draw on the virtual canvas. Any code written for the emulator
+ * should work with very minimal changes on the actual displays. Currently, you must copy and paste between
+ * the two LCD.cpp and LCD.hpp files to transfer your code.
+ *
+ * Created by Zachary Lineman, November 2022
+ */
+
+
 #include <iostream>
 #include "GUI/Window.hpp"
 #include "GUI/Sprite.hpp"
 
 #include "LCD Emulator/LCD.hpp"
 
-//Hephaestus engine = Hephaestus("EVT HUDL Display", 1280, 640);
 LCD lcd = LCD();
-Camera camera = Camera();
 
 void init() {
     const GLubyte* renderer = glGetString(GL_RENDERER); // get renderer string
@@ -16,17 +25,18 @@ void init() {
 }
 
 void update() {
-    const char* text =  "Hello World!";
-    char* titles[9] = {
-            "Voltage", "Battery %", "MPH",
-            "NULL", "NULL", "NULL",
-            "NULL", "NULL", "NULL",
-    };
-    lcd.setDefaultSections(titles);
-
-    lcd.displaySectionHeaders();
-    lcd.setTextForSection(0, "3.2 v");
-    lcd.setTextForSection(1, "85%");
+    const char* text =  R"( !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~)";
+//    char* titles[9] = {
+//            "Voltage", "Battery %", "MPH",
+//            "NULL", "NULL", "NULL",
+//            "NULL", "NULL", "NULL",
+//    };
+//    lcd.setDefaultSections(titles);
+//
+//    lcd.displaySectionHeaders();
+//    lcd.setTextForSection(0, "3.2 v");
+//    lcd.setTextForSection(1, "85%");
+    lcd.writeText(text, 0, 0, true);
 }
 
 int main() {

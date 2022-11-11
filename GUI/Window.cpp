@@ -1,6 +1,11 @@
-//
-// Created by Zachary Lineman on 11/7/22.
-//
+/*
+ * Window.hpp
+ * This file is the implementations for the Window abstraction class.
+ *
+ * This code is derived from https://github.com/ActuallyZach/Hephaestus.
+ *
+ * Created by Zachary Lineman on 11/7/22.
+ */
 
 #include "Window.hpp"
 Window::Window() {

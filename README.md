@@ -67,4 +67,3 @@ sudo apt-get install libglm-dev
 Download the latest release from the GLM github, https://github.com/g-truc/glm. Follow the `manual.md` file to install GLM.
 
 If you need help, you can check out: https://stackoverflow.com/a/17912620/14886210
-

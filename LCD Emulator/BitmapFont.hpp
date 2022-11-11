@@ -1,12 +1,20 @@
-//
-// Created by Zachary Lineman on 10/29/22.
-//
+/*
+ * BitmapFont.hpp
+ * This file contains any fonts used by the LCD. The current 4x6 font was generated
+ *
+ * This font was modified from:
+ * https://hackaday.io/project/6309-vga-graphics-over-spi-and-serial-vgatonic/log/20759-a-tiny-4x6-pixel-font-that-will-fit-on-almost-any-microcontroller-license-mit#header
+ * which is a modification from
+ * https://robey.lag.net/2010/01/23/tiny-monospace-font.html
+ *
+ * Created by Zachary Lineman on 10/29/22.
+ */
 
 #ifndef EVT_BITMAPFONTS_H
 #define EVT_BITMAPFONTS_H
 
 #include <cstdint>
-class BitMapFont {
+class BitmapFont {
 public:
     constexpr static const uint8_t font4x6[235][8] {
             {0x00, 0x00, 0x00, 0x00 },   // U+0000 (nul)
@@ -87,7 +95,7 @@ public:
             { 0x1F,0x4,0x1B,0x0 },// Character: K
             { 0x1F,0x10,0x10,0x0 },// Character: L
             { 0x1F,0x6,0x1F,0x0 },// Character: M
-            { 0x1F,0xE,0x1F,0x0 },// Character: N
+            { 0x1F,0x01,0x1E,0x0 },// Character: N
             { 0xE,0x11,0xE,0x0 },// Character: O
             { 0x1F,0x5,0x2,0x0 },// Character: P
             { 0xE,0x19,0x1E,0x0 },// Character: Q
@@ -114,7 +122,7 @@ public:
             { 0x4,0x1E,0x5,0x0 },// Character: f
             { 0x6,0x15,0xF,0x0 },// Character: g
             { 0x1F,0x2,0x1C,0x0 },// Character: h
-            { 0x1D,0x0,0x0,0x0 },// Character: i
+            { 0x0,0x1D,0x0,0x0 },// Character: i
             { 0x10,0x20,0x1D,0x0 },// Character: j
             { 0x1F,0xC,0x12,0x0 },// Character: k
             { 0x11,0x1F,0x10,0x0 },// Character: l
@@ -128,7 +136,7 @@ public:
             { 0x2,0x1F,0x12,0x0 },// Character: t
             { 0xE,0x10,0x1E,0x0 },// Character: u
             { 0xE,0x18,0xE,0x0 },// Character: v
-            { 0x1E,0x1C,0x1E,0x0 },// Character: w
+            { 0x1E,0x8,0x1E,0x0 },// Character: w
             { 0x12,0xC,0x12,0x0 },// Character: x
             { 0x3,0x14,0xF,0x0 },// Character: y
             { 0x1A,0x1E,0x16,0x0 },// Character: z

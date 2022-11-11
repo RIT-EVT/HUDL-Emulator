@@ -1,6 +1,12 @@
-//
-// Created by Zachary Lineman on 11/7/22.
-//
+/*
+ * Window.hpp
+ * This file is an abstraction over the OpenGL window using GLFW.
+ *
+ * This code is derived from https://github.com/ActuallyZach/Hephaestus.
+ *
+ * Created by Zachary Lineman on 11/7/22.
+ */
+
 
 #ifndef HUDLEMULATOR_WINDOW_HPP
 #define HUDLEMULATOR_WINDOW_HPP

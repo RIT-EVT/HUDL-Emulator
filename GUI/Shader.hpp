@@ -1,12 +1,11 @@
 /*
-    Shader.hpp
-    Zachary lineman
-    11/3/21
-    
-    =================
-    DESCRIPTION
-    =================
-*/
+ * Shader.hpp
+ * An abstraction over an OpenGL shader
+ *
+ * This code is derived from https://github.com/ActuallyZach/Hephaestus.
+ *
+ * Created by Zachary Lineman on 11/3/21.
+ */
 
 #ifndef OLYMPUS_SHADER_HPP
 #define OLYMPUS_SHADER_HPP

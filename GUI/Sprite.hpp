@@ -1,14 +1,12 @@
 /*
-    Sprite.hpp
-    Zachary lineman
-    11/3/21
-    
-    =================
-    Sprite Header Class
-    Represents a sprite that is displayed on the screen. Sprites have their own shader, position, dimensions, rotation and texture.
-    These all effect how the sprite is displayed.
-    =================
-*/
+ * Sprite.hpp
+ * Represents a sprite that is displayed on the screen. Sprites have their own shader, position, dimensions, rotation and texture.
+ * These all effect how the sprite is displayed.
+ *
+ * This code is derived from https://github.com/ActuallyZach/Hephaestus.
+ *
+ * Created by Zachary Lineman on 11/3/21.
+ */
 
 #ifndef OLYMPUS_SPRITE_HPP
 #define OLYMPUS_SPRITE_HPP
