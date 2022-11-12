@@ -26,17 +26,25 @@ void init() {
 
 void update() {
     const char* text =  R"( !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~)";
-//    char* titles[9] = {
-//            "Voltage", "Battery %", "MPH",
-//            "NULL", "NULL", "NULL",
-//            "NULL", "NULL", "NULL",
-//    };
-//    lcd.setDefaultSections(titles);
-//
-//    lcd.displaySectionHeaders();
-//    lcd.setTextForSection(0, "3.2 v");
-//    lcd.setTextForSection(1, "85%");
-    lcd.writeText(text, 0, 0, true);
+    char* titles[9] = {
+            "B Voltage", "Speed", "RPM",
+            "Temp 1", "Temp 2", "Temp 3",
+            "Status 1", "Pre Stat", "Torque",
+    };
+    lcd.setDefaultSections(titles);
+    lcd.displaySectionHeaders();
+
+    lcd.setTextForSection(0, "3.2 v");
+    lcd.setTextForSection(1, "25 mph");
+    lcd.setTextForSection(2, "3000");
+    lcd.setTextForSection(3, "40 C");
+    lcd.setTextForSection(4, "44 C");
+    lcd.setTextForSection(5, "43 C");
+    lcd.setTextForSection(6, "ON");
+    lcd.setTextForSection(7, "Ready");
+    lcd.setTextForSection(8, "100 NM");
+
+//    lcd.writeText(text, 0, 0, true);
 }
 
 int main() {

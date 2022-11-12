@@ -20,10 +20,10 @@ void LCD::initLCD() {
 void LCD::dataWrite(uint8_t data) {
     uint8_t page = lastPageAddress - emulationPageOffset;
 
-    for(unsigned int x = 0; x < 8; x ++) {
-        unsigned int bit = data >> x & 1;
+    for(uint8_t x = 0; x < 8; x ++) {
+        uint8_t bit = data >> x & 1;
 
-        unsigned int yValue = 63 - ((page * 8) + x);
+        uint8_t yValue = 63 - ((page * 8) + x);
 
         if (bit == 0) {
             screen[lastColumnAddress][yValue].hidden = true;
@@ -98,7 +98,7 @@ void LCD::driveColumn(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data)
 }
 
 void LCD::clearLCD(const uint8_t* bitMap) {
-    unsigned int i, j;
+    uint8_t i, j;
     unsigned char page = 0xB0;
 
     this->commandWrite(0xAE);         //Display OFF
@@ -117,7 +117,7 @@ void LCD::clearLCD(const uint8_t* bitMap) {
 }
 
 void LCD::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column){
-    unsigned int i, j;
+    uint8_t i, j;
     uint8_t columnUpperAddress = column;
     columnUpperAddress >>= 4;
 
@@ -125,7 +125,7 @@ void LCD::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column)
     columnLowerAddress <<= 4;
     columnLowerAddress >>= 4;
 
-    int amountOfPages = height / 8;
+    uint8_t amountOfPages = height / 8;
     if (height < 8) amountOfPages = 1;
 
     this->commandWrite(0xAE);           //Display OFF
@@ -145,8 +145,8 @@ void LCD::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column)
 }
 
 void LCD::displayMap(const uint8_t* bitMap) {
-    unsigned int i, j;
-    unsigned char page = 0xB0;
+    uint8_t i, j;
+    uint8_t page = 0xB0;
     this->commandWrite(0xAE);           //Display OFF
     this->commandWrite(0x40);           //Display start address + 0x40
     for (i = 0; i < 8; i++) { //64 pixel display / 8 pixels per page = 8 pages
@@ -193,8 +193,8 @@ void LCD::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHei
 }
 
 void LCD::writeText(const char *text, uint8_t page, uint8_t column, bool wrapText) {
-    for(int x = 0; x < strlen(text); x ++) {
-        int fontIndex = (int) ((unsigned char) text[x]);
+    for(uint8_t x = 0; x < strlen(text); x ++) {
+        uint8_t fontIndex = (int) ((unsigned char) text[x]);
 
         unsigned char characterMap[4] = {
                 BitmapFont::font4x6[fontIndex][0],
@@ -222,14 +222,13 @@ void LCD::setDefaultSections(char* newSectionTitles[9]) {
 }
 
 void LCD::displaySectionHeaders() {
-    int page = 0;
-    int column = 0;
-    int rowCounter = 0;
+    uint8_t page = 0;
+    uint8_t column = 0;
+    uint8_t rowCounter = 0;
 
-    const int sectionWidth = screenSizeX / sectionsPerRow;
+    uint8_t sectionWidth = screenSizeX / sectionsPerRow;
 
-    for (uint8_t sectionNumber = 0; sectionNumber < numberOfSections; sectionNumber++) {
-        const char* title = sectionTitles[sectionNumber];
+    for (auto title : sectionTitles) {
         uint8_t length = strlen(title) * 4;
         uint8_t padding = (sectionWidth - length) / 2;
 
@@ -254,11 +253,11 @@ void LCD::displaySectionHeaders() {
 }
 
 void LCD::setTextForSection(uint8_t section, const char* text) {
-    const int sectionWidth = screenSizeX / sectionsPerRow;
-    int adjustedSection = section + 1;
-    int sectionRow = adjustedSection / sectionsPerRow;
-    int sectionPage = (sectionRow * 3) + 1;
-    int sectionColumn = (adjustedSection - (sectionRow * sectionsPerRow) - 1) * sectionWidth;
+    uint8_t sectionWidth = screenSizeX / sectionsPerRow;
+    uint8_t adjustedSection = section + 1;
+    uint8_t sectionRow = section / sectionsPerRow;
+    uint8_t sectionPage = (sectionRow * 3) + 1;
+    uint8_t sectionColumn = (adjustedSection - (sectionRow * sectionsPerRow) - 1) * sectionWidth;
 
     uint8_t length = strlen(text) * 4;
     uint8_t padding = (sectionWidth - length) / 2;
