@@ -89,8 +89,8 @@ class Graphics {
 
     LCD& lcd;
 
-    static const uint8_t numberOfSections = 9;
-    static const uint8_t sectionsPerRow = 3;
+    const uint8_t numberOfSections = 9;
+    const uint8_t sectionsPerRow = 3;
 
     char* sectionTitles[9] = {
             "NULL", "NULL", "NULL",
@@ -101,10 +101,6 @@ public:
     explicit Graphics(LCD& lcd);
 
     void updateDisplay();
-    void writeText(const char* text, uint8_t page, uint8_t column, bool wrapText);
-    void setDefaultSections(char* newSectionTitles[9]);
-    void displaySectionHeaders();
-    void setTextForSection(uint8_t section, const char* text);
 
     /**
      * Clears only a certain area on the screen
@@ -125,6 +121,15 @@ public:
      */
     void displayMap(uint8_t* bitMap);
     void displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column);
+
+    /*
+     * User Functions
+     */
+    void writeText(const char* text, uint8_t page, uint8_t column, bool wrapText);
+    void setDefaultSections(char* newSectionTitles[9]);
+    void displaySectionHeaders();
+    void setTextForSection(uint8_t section, const char* text);
+    void drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY);
 };
 
 

@@ -11,10 +11,6 @@ Graphics::Graphics(LCD &lcd) : lcd(lcd) {
 }
 
 void Graphics::updateDisplay() {
-//    for(int index = 0; index < 1024; index ++) {
-//        Box box = drawBoxes[index];
-//
-//    }
     if(fullGraphicsMode) {
         clearLCD();
         displayMap(internalBitMap);
@@ -209,17 +205,22 @@ void Graphics::displaySectionHeaders() {
 }
 
 void Graphics::setTextForSection(uint8_t section, const char* text) {
-    const int sectionWidth = LCD::screenSizeX / sectionsPerRow;
-    int adjustedSection = section + 1;
-    int sectionRow = adjustedSection / sectionsPerRow;
-    int sectionPage = (sectionRow * 3) + 1;
-    int sectionColumn = (adjustedSection - (sectionRow * sectionsPerRow) - 1) * sectionWidth;
+    int sectionWidth = LCD::screenSizeX / sectionsPerRow;
+    int sectionRow = (section + 1) / sectionsPerRow;
+    int sectionColumn = section - (sectionsPerRow * (sectionRow - 1));
+
+    int page = (sectionRow * 3) + 1;
+    int column = sectionColumn * sectionWidth;
 
     uint8_t length = strlen(text) * 4;
     uint8_t padding = (sectionWidth - length) / 2;
 
-    sectionColumn += padding;
+    column += padding;
 
-    writeText(text, sectionPage, sectionColumn, false);
+    writeText(text, page, column, false);
 }
 
+void Graphics::drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY) {
+    double slope = (endY - endX) / (endX / startX);
+
+}
