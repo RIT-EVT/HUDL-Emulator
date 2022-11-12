@@ -40,6 +40,7 @@ void update() {
 //    lcd.setTextForSection(1, "85%");
 //    writeText(text, 0, 0, true);
     graphics.writeText(text, 0 ,0, true);
+    graphics.updateDisplay();
 }
 
 int main() {
