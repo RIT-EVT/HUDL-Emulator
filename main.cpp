@@ -36,15 +36,15 @@ void update() {
     graphics.setDefaultSections(titles);
     graphics.displaySectionHeaders();
 
-//    graphics.setTextForSection(0, "3.2 v");
-//    graphics.setTextForSection(1, "25 mph");
-//    graphics.setTextForSection(2, "3000");
-//    graphics.setTextForSection(3, "40 C");
-//    graphics.setTextForSection(4, "44 C");
+    graphics.setTextForSection(0, "3.2 v");
+    graphics.setTextForSection(1, "25 mph");
+    graphics.setTextForSection(2, "3000");
+    graphics.setTextForSection(3, "40 C");
+    graphics.setTextForSection(4, "44 C");
     graphics.setTextForSection(5, "43 C");
-//    graphics.setTextForSection(6, "ON");
-//    graphics.setTextForSection(7, "Ready");
-//    graphics.setTextForSection(8, "100 NM");
+    graphics.setTextForSection(6, "ON");
+    graphics.setTextForSection(7, "Ready");
+    graphics.setTextForSection(8, "100 NM");
 
 //    graphics.writeText(text, 0 ,0, true);
 

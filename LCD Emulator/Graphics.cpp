@@ -18,8 +18,8 @@ void Graphics::updateDisplay() {
 }
 
 void Graphics::clearLCD() {
-    unsigned int i, j;
-    unsigned char page = 0xB0;
+    uint8_t i, j;
+    uint8_t page = 0xB0;
 
     lcd.commandWrite(0xAE);         //Display OFF
     lcd.commandWrite(0x40);         //Display start address + 0x40
@@ -64,7 +64,7 @@ void Graphics::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitM
         }
         lcd.commandWrite(0xAF);
     } else {
-        int oneDIndex = (page * LCD::screenSizeX) + column;
+        uint8_t oneDIndex = (page * LCD::screenSizeX) + column;
 
         for (i = 0; i < amountOfPages; i++) {
             for (j = 0; j < bitMapWidth; j++) {
@@ -79,7 +79,7 @@ void Graphics::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitM
 }
 
 void Graphics::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column){
-    unsigned int i, j;
+    uint8_t i, j;
     uint8_t columnUpperAddress = column;
     columnUpperAddress >>= 4;
 
@@ -87,10 +87,10 @@ void Graphics::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t co
     columnLowerAddress <<= 4;
     columnLowerAddress >>= 4;
 
-    int amountOfPages = height / 8;
+    uint8_t amountOfPages = height / 8;
     if (height < 8) amountOfPages = 1;
 
-//    if (!fullGraphicsMode) {
+    if (!fullGraphicsMode) {
         lcd.commandWrite(0xAE);           //Display OFF
         lcd.commandWrite(0x40);           //Display start address + 0x40
         for (i = 0; i < amountOfPages; i++) { //64 pixel display / 8 pixels per page = 8 pages
@@ -105,30 +105,30 @@ void Graphics::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t co
             page++; //after 128 columns, go to next page
         }
         lcd.commandWrite(0xAF);
-//    } else {
-//        int oneDIndex = (page * LCD::screenSizeX) + column;
-//
-//        int widthCounter = 0;
-//        int heightCounter = 0;
-//        for(int index = oneDIndex; index < 1024; index ++) {
-//            if(height >= heightCounter) break;
-//            if (widthCounter < width) {
-//                widthCounter ++;
-//
-//                internalBitMap[oneDIndex] = 0x00;
-//
-//                oneDIndex ++;
-//            } else {
-//                heightCounter ++;
-//                widthCounter = 0;
-//            }
-//        }
-//    }
+    } else {
+        uint8_t oneDIndex = (page * LCD::screenSizeX) + column;
+
+        uint8_t widthCounter = 0;
+        uint8_t heightCounter = 0;
+        for(uint8_t index = oneDIndex; index < 1024; index ++) {
+            if(height >= heightCounter) break;
+            if (widthCounter < width) {
+                widthCounter ++;
+
+                internalBitMap[oneDIndex] = 0x00;
+
+                oneDIndex ++;
+            } else {
+                heightCounter ++;
+                widthCounter = 0;
+            }
+        }
+    }
 }
 
 void Graphics::displayMap(uint8_t* bitMap) {
-    unsigned int i, j;
-    unsigned char page = 0xB0;
+    uint8_t i, j;
+    uint8_t page = 0xB0;
     lcd.commandWrite(0xAE);           //Display OFF
     lcd.commandWrite(0x40);           //Display start address + 0x40
     for (i = 0; i < 8; i++) { //64 pixel display / 8 pixels per page = 8 pages
@@ -205,19 +205,18 @@ void Graphics::displaySectionHeaders() {
 }
 
 void Graphics::setTextForSection(uint8_t section, const char* text) {
-    int sectionWidth = LCD::screenSizeX / sectionsPerRow;
-    int sectionRow = (section + 1) / sectionsPerRow;
-    int sectionColumn = section - (sectionsPerRow * (sectionRow - 1));
-
-    int page = (sectionRow * 3) + 1;
-    int column = sectionColumn * sectionWidth;
+    uint8_t sectionWidth = LCD::screenSizeX / sectionsPerRow;
+    uint8_t adjustedSection = section + 1;
+    uint8_t sectionRow = section / sectionsPerRow;
+    uint8_t sectionPage = (sectionRow * 3) + 1;
+    uint8_t sectionColumn = (adjustedSection - (sectionRow * sectionsPerRow) - 1) * sectionWidth;
 
     uint8_t length = strlen(text) * 4;
     uint8_t padding = (sectionWidth - length) / 2;
 
-    column += padding;
+    sectionColumn += padding;
 
-    writeText(text, page, column, false);
+    writeText(text, sectionPage, sectionColumn, false);
 }
 
 void Graphics::drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY) {
