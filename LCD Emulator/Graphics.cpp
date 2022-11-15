@@ -13,7 +13,23 @@ Graphics::Graphics(LCD &lcd) : lcd(lcd) {
 void Graphics::updateDisplay() {
     if(fullGraphicsMode) {
         clearLCD();
-        displayMap(internalBitMap);
+
+        uint8_t* bitMap = internalBitMap;
+        uint8_t i, j;
+        uint8_t page = 0xB0;
+        lcd.commandWrite(0xAE);           //Display OFF
+        lcd.commandWrite(0x40);           //Display start address + 0x40
+        for (i = 0; i < 8; i++) { //64 pixel display / 8 pixels per page = 8 pages
+            lcd.commandWrite(page);       //send page address
+            lcd.commandWrite(0x10);       //column address upper 4 bits + 0x10
+            lcd.commandWrite(0x00);       //column address lower 4 bits + 0x00
+            for (j = 0; j < 128; j++) {         //128 columns wide
+                lcd.dataWrite(*bitMap);  //write pixels from bitmap
+                bitMap++;                       // Advance the bitmap pointer by one. This means we can just grab the last one the next loop.
+            }
+            page++; //after 128 columns, go to next page
+        }
+        lcd.commandWrite(0xAF);
     }
 }
 
@@ -35,7 +51,7 @@ void Graphics::clearLCD() {
     lcd.commandWrite(0xAF);
 }
 
-void Graphics::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column) {
+void Graphics::displayBitMap(uint8_t* bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column) {
     uint8_t i, j;
     uint8_t columnUpperAddress = column;
     columnUpperAddress >>= 4;
@@ -47,7 +63,19 @@ void Graphics::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitM
     uint8_t amountOfPages = bitMapHeight / 8;
     if (bitMapHeight < 8) amountOfPages = 1;
 
-    if(!fullGraphicsMode) {
+    if(fullGraphicsMode) {
+        int oneDIndex = (page * LCD::screenSizeX) + column;
+
+        for (i = 0; i < amountOfPages; i++) {
+            for (j = 0; j < bitMapWidth; j++) {
+                internalBitMap[oneDIndex] = bitMap[0];
+                bitMap++;
+                oneDIndex ++;
+            }
+
+            oneDIndex += LCD::screenSizeX;
+        }
+    } else {
         lcd.commandWrite(0xAE);           //Display OFF
         lcd.commandWrite(0x40);           //Display start address + 0x40
         for (i = 0; i < amountOfPages; i++) { //64 pixel display / 8 pixels per page = 8 pages
@@ -63,18 +91,6 @@ void Graphics::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitM
             page++; //after 128 columns, go to next page
         }
         lcd.commandWrite(0xAF);
-    } else {
-        uint8_t oneDIndex = (page * LCD::screenSizeX) + column;
-
-        for (i = 0; i < amountOfPages; i++) {
-            for (j = 0; j < bitMapWidth; j++) {
-                internalBitMap[oneDIndex] = bitMap[0];
-                bitMap++;
-                oneDIndex ++;
-            }
-
-            oneDIndex += LCD::screenSizeX - bitMapWidth;
-        }
     }
 }
 
@@ -106,10 +122,10 @@ void Graphics::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t co
         }
         lcd.commandWrite(0xAF);
     } else {
-        uint8_t oneDIndex = (page * LCD::screenSizeX) + column;
+        int oneDIndex = (page * LCD::screenSizeX) + column;
 
-        uint8_t widthCounter = 0;
-        uint8_t heightCounter = 0;
+        int widthCounter = 0;
+        int heightCounter = 0;
         for(uint8_t index = oneDIndex; index < 1024; index ++) {
             if(height >= heightCounter) break;
             if (widthCounter < width) {
@@ -127,58 +143,71 @@ void Graphics::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t co
 }
 
 void Graphics::displayMap(uint8_t* bitMap) {
-    uint8_t i, j;
-    uint8_t page = 0xB0;
-    lcd.commandWrite(0xAE);           //Display OFF
-    lcd.commandWrite(0x40);           //Display start address + 0x40
-    for (i = 0; i < 8; i++) { //64 pixel display / 8 pixels per page = 8 pages
-        lcd.commandWrite(page);       //send page address
-        lcd.commandWrite(0x10);       //column address upper 4 bits + 0x10
-        lcd.commandWrite(0x00);       //column address lower 4 bits + 0x00
-        for (j = 0; j < 128; j++) {         //128 columns wide
-            lcd.dataWrite(*bitMap);  //write pixels from bitmap
-            bitMap++;                       // Advance the bitmap pointer by one. This means we can just grab the last one the next loop.
+    if(fullGraphicsMode) {
+        int oneDIndex = 0;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 128; j++) {
+                internalBitMap[oneDIndex] = bitMap[0];
+                bitMap++;
+                oneDIndex ++;
+            }
         }
-        page++; //after 128 columns, go to next page
+    } else {
+        uint8_t i, j;
+        uint8_t page = 0xB0;
+        lcd.commandWrite(0xAE);           //Display OFF
+        lcd.commandWrite(0x40);           //Display start address + 0x40
+        for (i = 0; i < 8; i++) { //64 pixel display / 8 pixels per page = 8 pages
+            lcd.commandWrite(page);       //send page address
+            lcd.commandWrite(0x10);       //column address upper 4 bits + 0x10
+            lcd.commandWrite(0x00);       //column address lower 4 bits + 0x00
+            for (j = 0; j < 128; j++) {         //128 columns wide
+                lcd.dataWrite(*bitMap);  //write pixels from bitmap
+                bitMap++;                       // Advance the bitmap pointer by one. This means we can just grab the last one the next loop.
+            }
+            page++; //after 128 columns, go to next page
+        }
+        lcd.commandWrite(0xAF);
     }
-    lcd.commandWrite(0xAF);
 }
 
  void Graphics::writeText(const char *text, uint8_t page, uint8_t column, bool wrapText) {
-    for(int x = 0; x < strlen(text); x ++) {
-        int fontIndex = (int) ((unsigned char) text[x]);
+     for(uint8_t x = 0; x < strlen(text); x ++) {
+         uint8_t fontIndex = (int) ((unsigned char) text[x]);
 
-        unsigned char characterMap[4] = {
-                BitmapFont::font4x6[fontIndex][0],
-                BitmapFont::font4x6[fontIndex][1],
-                BitmapFont::font4x6[fontIndex][2],
-                BitmapFont::font4x6[fontIndex][3],
-        };
+         unsigned char characterMap[4] = {
+                 BitmapFont::font4x6[fontIndex][0],
+                 BitmapFont::font4x6[fontIndex][1],
+                 BitmapFont::font4x6[fontIndex][2],
+                 BitmapFont::font4x6[fontIndex][3],
+         };
 
-        if (column >= LCD::screenSizeX) return;
+         if (column >= LCD::screenSizeX) return;
 
-        displayBitMap(characterMap, 4, 8, page, column);
-        column += 4;
+         displayBitMap(characterMap, 4, 8, page, column);
+         column += 4;
 
-        if (wrapText && column >= LCD::screenSizeX) {
-            page ++;
-            column = 0;
-        }
-    }
+         if (wrapText && column >= LCD::screenSizeX) {
+             page++;
+             std::cout << (int) page << std::endl;
+             column = 0;
+         }
+     }
 }
 
 void Graphics::setDefaultSections(char* newSectionTitles[9]) {
     for (uint8_t x = 0; x < 9; x++) {
-        sectionTitles[x] = newSectionTitles[x];
+        this->sectionTitles[x] = newSectionTitles[x];
     }
 }
 
 void Graphics::displaySectionHeaders() {
-    int page = 0;
-    int column = 0;
-    int rowCounter = 0;
+    uint8_t page = 0;
+    uint8_t column = 0;
+    uint8_t rowCounter = 0;
 
-    const int sectionWidth = LCD::screenSizeX / sectionsPerRow;
+    uint8_t sectionWidth = LCD::screenSizeX / sectionsPerRow;
 
     for (auto title : sectionTitles) {
         uint8_t length = strlen(title) * 4;
@@ -223,3 +252,4 @@ void Graphics::drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t en
     double slope = (endY - endX) / (endX / startX);
 
 }
+
