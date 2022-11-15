@@ -255,9 +255,78 @@ void Graphics::setPixel(uint8_t x, uint8_t y, bool on) {
 
     uint8_t bit = (internalBitMap[oneDIndex] >> yLeft) & 1U;
     if(bit == 0 && on) {
-        internalBitMap[oneDIndex] ^= 1UL << yLeft;
+        internalBitMap[oneDIndex] ^= 1UL << yLeft; // Toggle a bit yLeft in the byte
     } else if (bit == 1 && !on) {
-        internalBitMap[oneDIndex] ^= 1UL << yLeft;
+        internalBitMap[oneDIndex] ^= 1UL << yLeft; // Toggle a bit yLeft in the byte
     }
 }
 
+// Based on https://csustan.csustan.edu/~tom/Lecture-Notes/Graphics/Bresenham-Line/Bresenham-Line.pdf
+void Graphics::drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+    int deltaX;
+    int deltaY;
+    int stepX;
+    int stepY;
+    deltaX = x1 - x0;
+    deltaY = y1 - y0;
+
+    if (deltaY < 0) {
+        deltaY = -deltaY;
+        stepY = -1;
+    } else {
+        stepY = 1;
+    }
+
+    if (deltaX < 0) {
+        deltaX = -deltaX;
+        stepX = -1;
+    } else {
+        stepX = 1;
+    }
+
+    // Shifting one to the left is the exact same as multiply by 2, just faster.
+    deltaY <<= 1;
+    deltaX <<= 1;
+
+    // Set our starting pixel
+    setPixel(x0, y0, true);
+
+    if (deltaX > deltaY) {
+        int fraction = deltaY - (deltaX >> 1);  // Divide Delta X by 2
+        while (x0 != x1) {
+            if (fraction >= 0) {
+                y0 += stepY;
+                fraction -= deltaX;
+            }
+            x0 += stepX;
+            fraction += deltaY;
+
+            setPixel(x0, y0, true);
+        }
+    } else {
+        int fraction = deltaX - (deltaY >> 1); // Divide Delta Y by 2
+        while (y0 != y1) {
+            if (fraction >= 0) {
+                x0 += stepX;
+                fraction -= deltaY;
+            }
+            y0 += stepY;
+            fraction += deltaX;
+
+            setPixel(x0, y0, true);
+        }
+    }
+}
+
+void Graphics::drawVertices(Graphics::Vertex *vertexArray, uint8_t size) {
+    for (uint8_t index = 0; index < size; index++) {
+        Vertex start = vertexArray[index];
+        uint8_t endIndex = index + 1;
+
+        if (endIndex >= size) endIndex = 0;
+
+        Vertex end = vertexArray[endIndex];
+
+        drawLine(start.x, start.y, end.x, end.y);
+    }
+}

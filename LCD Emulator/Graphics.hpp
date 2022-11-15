@@ -9,15 +9,6 @@
 #include "./LCD.hpp"
 
 class Graphics {
-    struct Box {
-        int minX;
-        int maxX;
-        int minY;
-        int maxY;
-    };
-
-    int lastBox = 0;
-    Box drawBoxes[1024];
     bool fullGraphicsMode = true;
 
     uint8_t internalBitMap[1024] = {
@@ -98,6 +89,11 @@ class Graphics {
             "NULL", "NULL", "NULL",
     };
 public:
+    struct Vertex {
+        int x;
+        int y;
+    };
+
     explicit Graphics(LCD& lcd);
 
     void updateDisplay();
@@ -129,8 +125,11 @@ public:
     void setDefaultSections(char* newSectionTitles[9]);
     void displaySectionHeaders();
     void setTextForSection(uint8_t section, const char* text);
-    void drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY);
     void setPixel(uint8_t x, uint8_t y, bool on);
+
+    // Line Drawing
+    void drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY);
+    void drawVertices(Vertex* vertexArray, uint8_t size);
 };
 
 

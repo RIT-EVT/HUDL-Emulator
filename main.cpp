@@ -115,7 +115,13 @@ void update() {
 //    graphics.writeText(text, 0 ,0, true);
 //    graphics.displayMap(internalBitMap);
 
-    graphics.drawLine(10,0,64, 32);
+    Graphics::Vertex cube[4] = {
+            {10, 10},
+            { 20, 10},
+            { 20, 20},
+            { 10, 20},
+    };
+    graphics.drawVertices(cube, 4);
 
     graphics.updateDisplay();
 }
