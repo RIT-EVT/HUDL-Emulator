@@ -93,27 +93,29 @@ void init() {
 }
 
 void update() {
-    const char* text =  R"( !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~)";
-    char* titles[9] = {
-            "B Voltage", "Speed", "RPM",
-            "Temp 1", "Temp 2", "Temp 3",
-            "Status 1", "Pre Stat", "Torque",
-    };
-    graphics.setDefaultSections(titles);
-    graphics.displaySectionHeaders();
-
-    graphics.setTextForSection(0, "3.2 v");
-    graphics.setTextForSection(1, "25 mph");
-    graphics.setTextForSection(2, "3000");
-    graphics.setTextForSection(3, "40 C");
-    graphics.setTextForSection(4, "44 C");
-    graphics.setTextForSection(5, "43 C");
-    graphics.setTextForSection(6, "ON");
-    graphics.setTextForSection(7, "Ready");
-    graphics.setTextForSection(8, "100 NM");
+//    const char* text =  R"( !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~)";
+//    char* titles[9] = {
+//            "B Voltage", "Speed", "RPM",
+//            "Temp 1", "Temp 2", "Temp 3",
+//            "Status 1", "Pre Stat", "Torque",
+//    };
+//    graphics.setDefaultSections(titles);
+//    graphics.displaySectionHeaders();
+//
+//    graphics.setTextForSection(0, "3.2 v");
+//    graphics.setTextForSection(1, "25 mph");
+//    graphics.setTextForSection(2, "3000");
+//    graphics.setTextForSection(3, "40 C");
+//    graphics.setTextForSection(4, "44 C");
+//    graphics.setTextForSection(5, "43 C");
+//    graphics.setTextForSection(6, "ON");
+//    graphics.setTextForSection(7, "Ready");
+//    graphics.setTextForSection(8, "100 NM");
 
 //    graphics.writeText(text, 0 ,0, true);
 //    graphics.displayMap(internalBitMap);
+
+    graphics.drawLine(10,0,64, 32);
 
     graphics.updateDisplay();
 }

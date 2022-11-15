@@ -130,6 +130,7 @@ public:
     void displaySectionHeaders();
     void setTextForSection(uint8_t section, const char* text);
     void drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY);
+    void setPixel(uint8_t x, uint8_t y, bool on);
 };
 
 

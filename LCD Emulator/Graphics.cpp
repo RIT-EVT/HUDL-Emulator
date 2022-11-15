@@ -248,8 +248,16 @@ void Graphics::setTextForSection(uint8_t section, const char* text) {
     writeText(text, sectionPage, sectionColumn, false);
 }
 
-void Graphics::drawLine(uint8_t startX, uint8_t startY, uint8_t endX, uint8_t endY) {
-    double slope = (endY - endX) / (endX / startX);
+void Graphics::setPixel(uint8_t x, uint8_t y, bool on) {
+    int page = y / 8;
+    int yLeft = y % 8;
+    int oneDIndex = (page * LCD::screenSizeX) + x;
 
+    uint8_t bit = (internalBitMap[oneDIndex] >> yLeft) & 1U;
+    if(bit == 0 && on) {
+        internalBitMap[oneDIndex] ^= 1UL << yLeft;
+    } else if (bit == 1 && !on) {
+        internalBitMap[oneDIndex] ^= 1UL << yLeft;
+    }
 }
 
