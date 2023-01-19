@@ -34,7 +34,9 @@ void update() {
     lcd.setDefaultSections(titles);
     lcd.displaySectionHeaders();
 
-    lcd.setTextForSection(0, "3.2 v");
+    char buffer[128] = {};
+    snprintf(buffer, (8), "%d", (12));
+    lcd.setTextForSection(0, buffer);
     lcd.setTextForSection(1, "25 mph");
     lcd.setTextForSection(2, "3000");
     lcd.setTextForSection(3, "40 C");
