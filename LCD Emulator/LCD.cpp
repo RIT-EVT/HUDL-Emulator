@@ -118,12 +118,8 @@ void LCD::clearLCD(const uint8_t* bitMap) {
 
 void LCD::clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column){
     uint8_t i, j;
-    uint8_t columnUpperAddress = column;
-    columnUpperAddress >>= 4;
-
-    uint8_t columnLowerAddress = column;
-    columnLowerAddress <<= 4;
-    columnLowerAddress >>= 4;
+    uint8_t columnUpperAddress = (column & 0xf0) >> 4;
+    uint8_t columnLowerAddress = (column & 0x0f);
 
     uint8_t amountOfPages = height / 8;
     if (height < 8) amountOfPages = 1;
@@ -164,12 +160,8 @@ void LCD::displayMap(const uint8_t* bitMap) {
 
 void LCD::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHeight, uint8_t page, uint8_t column) {
     uint8_t i, j;
-    uint8_t columnUpperAddress = column;
-    columnUpperAddress >>= 4;
-
-    uint8_t columnLowerAddress = column;
-    columnLowerAddress <<= 4;
-    columnLowerAddress >>= 4;
+    uint8_t columnUpperAddress = (column & 0xf0) >> 4;
+    uint8_t columnLowerAddress = (column & 0x0f);
 
     uint8_t amountOfPages = bitMapHeight / 8;
     if (bitMapHeight < 8) amountOfPages = 1;
@@ -194,7 +186,7 @@ void LCD::displayBitMap(uint8_t * bitMap, uint8_t bitMapWidth, uint8_t bitMapHei
 
 void LCD::writeText(const char *text, uint8_t page, uint8_t column, bool wrapText) {
     for(uint8_t x = 0; x < strlen(text); x ++) {
-        uint8_t fontIndex = (int) ((unsigned char) text[x]);
+        uint8_t fontIndex = text[x];
 
         unsigned char characterMap[4] = {
                 BitmapFont::font4x6[fontIndex][0],
