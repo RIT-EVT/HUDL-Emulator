@@ -18,12 +18,10 @@
 
 class Window {
 private:
-    /// The GLFW window that this class wraps.
-    GLFWwindow *window;
     /// The pixel width of the window.
-    int width { 640 };
+    int width { 1280 };
     /// The pixel height of the window.
-    int height { 400 };
+    int height { 640 };
 
     vector<Sprite*> sprites;
 
@@ -62,10 +60,10 @@ void main()
 public:
     Window();
 
-    void addSprite(Sprite* sprite);
+    /// The GLFW window that this class wraps.
+    GLFWwindow *window;
 
-    /// Called to start the window loop. This will display the window onto screen.
-    void startWindowLoop();
+    void addSprite(Sprite* sprite);
 
     void process();
 

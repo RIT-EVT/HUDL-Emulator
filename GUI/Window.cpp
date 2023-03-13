@@ -8,6 +8,9 @@
  */
 
 #include "Window.hpp"
+#include "../doom/imgui/imgui.h"
+#include "../doom/imgui/imgui_impl_opengl3.h"
+
 Window::Window() {
     // Initialize GLFW library
     if (!glfwInit()) {
@@ -58,6 +61,7 @@ void Window::process() {
         sprite->draw();
     }
 
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     // Swap front and back buffers
     glfwSwapBuffers(window);
     // Poll for and process events

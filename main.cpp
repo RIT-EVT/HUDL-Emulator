@@ -17,6 +17,7 @@
  */
 
 
+#include <stdio.h>
 #include <libc.h>
 #include "doom/doomgeneric/doomgeneric/doomgeneric.h"
 
@@ -24,11 +25,19 @@
 #include "GUI/Window.hpp"
 #include "GUI/Sprite.hpp"
 #include "LCD Emulator/Graphics.hpp"
+#include "doom/imgui/imgui.h"
+#include "doom/imgui/imgui_impl_glfw.h"
+#include "doom/imgui/imgui_impl_opengl3.h"
 
 LCD lcd = LCD();
 Graphics graphics = Graphics(lcd);
 Window mainWindow;
-//GLFWwindow *doomWindow;
+
+static int pixelCutoff = 50;
+static int pixelSize = DOOMGENERIC_RESY / LCD::screenSizeY;
+static float redWeight = 0.8;
+static float blueWeight = 0.7;
+static float greenWeight = 1.3;
 
 uint8_t compressPixel(uint32_t pixel) {
     uint8_t red = pixel >> 16;
@@ -36,14 +45,24 @@ uint8_t compressPixel(uint32_t pixel) {
     uint8_t blue = pixel >> 0;
     uint8_t transp = pixel >> 24;
 
-    return (blue + green + red) / 3;
+    /*
+     * Uncomment to enable color weighting. Could lead to better colors with trial and error.
+     */
+//    float dRed = (float) red * redWeight;
+//    float dBlue = (float) blue * blueWeight;
+//    float dGreen = (float) green * greenWeight;
+//
+//    blue = dBlue;
+//    red = dRed;
+//    green = dGreen;
+
+    return (blue + green  + red) / 3;
 }
 
 void update() {
     int x = 0;
     int y = 0;
 
-    int pixelSize = 3;
     for (int i = 1; i < DOOMGENERIC_RESY - 1; i++) {
         if (i % pixelSize == 0) {
             for (int j =  1; j < DOOMGENERIC_RESX - 1; j++) {
@@ -66,13 +85,14 @@ void update() {
 
                         uint8_t combinedValue = (pixel1Value + pixel2Value + pixel3Value + pixel4Value + pixel5Value) / 5;
 
-                        if (combinedValue < 128) {
+                        if (combinedValue < pixelCutoff) {
                             graphics.setPixel(x, y, false);
                         } else {
                             graphics.setPixel(x, y, true);
                         }
+
+                        x ++;
                     }
-                    x ++;
                 }
             }
             y ++;
@@ -81,28 +101,34 @@ void update() {
     }
 }
 
-//void drawDoomWindow() {
-//    if(glfwWindowShouldClose(doomWindow)) {
-//        glfwTerminate();
-//    }
-//
-//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//
-//    glDrawPixels(DOOMGENERIC_RESX, DOOMGENERIC_RESY, GL_BGRA, GL_UNSIGNED_BYTE, DG_ScreenBuffer);
-//    glfwSwapBuffers(doomWindow);
-//    glfwWaitEvents();
-//}
+void imguiProcess() {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
 
+    ImGui::Begin("Editor");                          // Create a window called "Hello, world!" and append into it.
+
+    ImGui::Text("Edit settings for the doom port using this UI.");               // Display some text (you can use a format strings too)
+
+    ImGui::SliderInt("cut-off", &pixelCutoff, 0, 255);            // Edit 1 float using a slider from 0.0f to 1.0f
+    ImGui::SliderFloat("Blue Px Weight", &blueWeight, 0, 2);            // Edit 1 float using a slider from 0.0f to 1.0f
+    ImGui::SliderFloat("Green Px Weight", &greenWeight, 0, 2);            // Edit 1 float using a slider from 0.0f to 1.0f
+    ImGui::SliderFloat("Red Px Weight", &redWeight, 0, 2);            // Edit 1 float using a slider from 0.0f to 1.0f
+
+    if (ImGui::Button("Increase Pixel Size"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+        pixelSize ++;
+
+    if (ImGui::Button("Decrease Pixel Size"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+        pixelSize --;
+
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+    ImGui::End();
+
+    ImGui::Render();
+}
 extern "C" {
 void DG_Init() {
-//    if (!glfwInit()) {
-//        exit(-9);
-//    }
-//
-//    doomWindow = glfwCreateWindow(DOOMGENERIC_RESX / 2, DOOMGENERIC_RESY / 2, "Doom", NULL, NULL);
-//    glfwMakeContextCurrent(doomWindow);
-//    glewInit();
-
     mainWindow.update = &update;
 
     const int spriteSize = 10;
@@ -118,14 +144,28 @@ void DG_Init() {
             mainWindow.addSprite(&lcd.screen[x][y]);
         }
     }
-}
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    const char* glsl_version = "#version 330";
+    ImGui_ImplGlfw_InitForOpenGL(mainWindow.window, true);
+    ImGui_ImplOpenGL3_Init(glsl_version);
+}
 
 void DG_DrawFrame() {
     update();
     graphics.updateDisplay();
+    imguiProcess();
     mainWindow.process();
-//    drawDoomWindow();
 }
 
 void DG_SleepMs(uint32_t ms) {
@@ -146,6 +186,6 @@ int DG_GetKey(int* pressed, unsigned char* doomKey) {
 }
 
 void DG_SetWindowTitle(const char * title) {
-//    glfwSetWindowTitle(doomWindow, title);
+    glfwSetWindowTitle(mainWindow.window, title);
 }
 }
