@@ -66,8 +66,6 @@ public:
     void addSprite(Sprite* sprite);
 
     void process();
-
-    std::function<void()> update{};
 };
 
 

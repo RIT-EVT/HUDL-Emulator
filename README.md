@@ -1,5 +1,11 @@
-# HUDL-Emulator
+# HUDL-Emulator 🤯 DOOM MODE 🤯
 An emulator for the EVT-HUDL device. Very rudimentary and does not actually emulate the full device. Just enough functionality for the emulator to display data.
+
+## What is 🤯 DOOM MODE 🤯???
+🤯 DOOM MODE 🤯 is a port of DOOM 1 (1993) to the HUDL display. This source port uses the [doomgeneric](https://github.com/ozkl/doomgeneric) port for its internal game. The majority of work for porting is found in main.cpp, and consists of getting the game actually displaying on the HUDL.
+
+### To get 🤯 DOOM MODE 🤯 running
+To get 🤯 DOOM MODE 🤯 running, you will need to add `-iwad ./doom/DOOM1.wad` as your program arguments. This tells the core doom game where the WAD file is that it should play off of. You will need to supply your own WAD file to get the emulator up and running.
 
 ## Install Dependencies
 To install and run the emulator, you need a few libraries.
