@@ -24,20 +24,18 @@
 #include "LCD Emulator/LCD.hpp"
 #include "GUI/Window.hpp"
 #include "GUI/Sprite.hpp"
-#include "LCD Emulator/Graphics.hpp"
 #include "doom/imgui/imgui.h"
 #include "doom/imgui/imgui_impl_glfw.h"
 #include "doom/imgui/imgui_impl_opengl3.h"
 
 LCD lcd = LCD();
-Graphics graphics = Graphics(lcd);
 Window mainWindow;
 
 static int pixelCutoff = 50;
 static int pixelSize = DOOMGENERIC_RESY / LCD::screenSizeY;
-static float redWeight = 0.8;
+static float redWeight = 1;
 static float blueWeight = 0.7;
-static float greenWeight = 1.3;
+static float greenWeight = 1.2;
 
 uint8_t compressPixel(uint32_t pixel) {
     uint8_t red = pixel >> 16;
@@ -86,9 +84,9 @@ void update() {
                         uint8_t combinedValue = (pixel1Value + pixel2Value + pixel3Value + pixel4Value + pixel5Value) / 5;
 
                         if (combinedValue < pixelCutoff) {
-                            graphics.setPixel(x, y, false);
+                            lcd.setPixel(x, y, false);
                         } else {
-                            graphics.setPixel(x, y, true);
+                            lcd.setPixel(x, y, true);
                         }
 
                         x ++;
@@ -163,7 +161,7 @@ void DG_Init() {
 
 void DG_DrawFrame() {
     update();
-    graphics.updateDisplay();
+    lcd.updateDisplay();
     imguiProcess();
     mainWindow.process();
 }
