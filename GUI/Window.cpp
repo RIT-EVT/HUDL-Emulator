@@ -20,7 +20,7 @@ Window::Window() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    window = glfwCreateWindow(width, height, "HUDL Emulator", NULL, NULL);
+    window = glfwCreateWindow(width / 2, height / 2, "HUDL Emulator", NULL, NULL);
 
     if (!window) {
         glfwTerminate();
@@ -39,37 +39,27 @@ Window::Window() {
     defaultSpriteShader.setup();
 }
 
-void Window::startWindowLoop() {
-    glfwGetWindowSize(window, &width, &height);
-
-    while (!glfwWindowShouldClose(window)) {
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        // RENDER
-
-        update();
-        for(Sprite* sprite: sprites) {
-            sprite->draw();
-        }
-
-        glDisable(GL_BLEND);
-
-        // Swap front and back buffers
-        glfwSwapBuffers(window);
-        // Poll for and process events
-        glfwPollEvents();
-    }
-
-    glfwTerminate();
-}
-
 void Window::addSprite(Sprite *sprite) {
     sprite->updateScreenDimensions(width, height);
 
     sprite->shader = defaultSpriteShader;
     sprites.push_back(sprite);
+}
+
+void Window::process() {
+    if(glfwWindowShouldClose(window)) {
+        glfwTerminate();
+    }
+
+    glfwGetWindowSize(window, &width, &height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    for(Sprite* sprite: sprites) {
+        sprite->draw();
+    }
+
+    // Swap front and back buffers
+    glfwSwapBuffers(window);
+    // Poll for and process events
+    glfwPollEvents();
 }

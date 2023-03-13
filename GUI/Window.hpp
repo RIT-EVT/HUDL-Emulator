@@ -11,8 +11,6 @@
 #ifndef HUDLEMULATOR_WINDOW_HPP
 #define HUDLEMULATOR_WINDOW_HPP
 
-#include <iostream>
-
 // OpenGL
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -23,9 +21,9 @@ private:
     /// The GLFW window that this class wraps.
     GLFWwindow *window;
     /// The pixel width of the window.
-    int width { 1280 };
+    int width { 640 };
     /// The pixel height of the window.
-    int height { 640 };
+    int height { 400 };
 
     vector<Sprite*> sprites;
 
@@ -68,6 +66,8 @@ public:
 
     /// Called to start the window loop. This will display the window onto screen.
     void startWindowLoop();
+
+    void process();
 
     std::function<void()> update{};
 };
