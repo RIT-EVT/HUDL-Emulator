@@ -7,6 +7,40 @@ An emulator for the EVT-HUDL device. Very rudimentary and does not actually emul
 ### To get 🤯 DOOM MODE 🤯 running
 To get 🤯 DOOM MODE 🤯 running, you will need to add `-iwad ./doom/DOOM1.wad` as your program arguments. This tells the core doom game where the WAD file is that it should play off of. You will need to supply your own WAD file to get the emulator up and running.
 
+#### Changes to Doomgeneric
+Some changes are needed to Doomgeneric to allow it to interoperate with C++. The changes are all in one file, for ease this file has been provided below, just replace `doom/doomgeneric/doomgeneric/doomgeneric.h` (that's a lot of doomgeneric) with this file.
+```c
+#ifndef DOOM_GENERIC
+#define DOOM_GENERIC
+
+#include <stdlib.h>
+#include <stdint.h>
+
+#define DOOMGENERIC_RESX 320
+#define DOOMGENERIC_RESY 200
+
+extern uint32_t* DG_ScreenBuffer;
+
+#ifdef __cplusplus
+extern "C" {
+    void DG_Init();
+    void DG_DrawFrame();
+    void DG_SleepMs(uint32_t ms);
+    uint32_t DG_GetTicksMs();
+    int DG_GetKey(int* pressed, unsigned char* key);
+    void DG_SetWindowTitle(const char * title);
+};
+#else
+void DG_Init();
+void DG_DrawFrame();
+void DG_SleepMs(uint32_t ms);
+uint32_t DG_GetTicksMs();
+int DG_GetKey(int* pressed, unsigned char* key);
+void DG_SetWindowTitle(const char * title);
+#endif
+#endif //DOOM_GENERIC
+```
+
 ## Install Dependencies
 To install and run the emulator, you need a few libraries.
 
