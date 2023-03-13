@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <libc.h>
 #include "doom/doomgeneric/doomgeneric/doomgeneric.h"
+#include "doom/doomgeneric/doomgeneric/doomkeys.h"
 
 #include "LCD Emulator/LCD.hpp"
 #include "GUI/Window.hpp"
@@ -27,6 +28,8 @@
 #include "doom/imgui/imgui.h"
 #include "doom/imgui/imgui_impl_glfw.h"
 #include "doom/imgui/imgui_impl_opengl3.h"
+
+#define KEYQUEUE_SIZE 16
 
 LCD lcd = LCD();
 Window mainWindow;
@@ -36,6 +39,63 @@ static int pixelSize = DOOMGENERIC_RESY / LCD::screenSizeY;
 static float redWeight = 1;
 static float blueWeight = 0.7;
 static float greenWeight = 1.2;
+
+static unsigned short s_KeyQueue[KEYQUEUE_SIZE];
+static unsigned int s_KeyQueueWriteIndex = 0;
+static unsigned int s_KeyQueueReadIndex = 0;
+
+static unsigned char convertToDoomKey(unsigned int key) {
+    switch (key) {
+        case GLFW_KEY_ENTER:
+            key = KEY_ENTER;
+            break;
+        case GLFW_KEY_ESCAPE:
+            key = KEY_ESCAPE;
+            break;
+        case GLFW_KEY_LEFT:
+            key = KEY_LEFTARROW;
+            break;
+        case GLFW_KEY_RIGHT:
+            key = KEY_RIGHTARROW;
+            break;
+        case GLFW_KEY_UP:
+            key = KEY_UPARROW;
+            break;
+        case GLFW_KEY_DOWN:
+            key = KEY_DOWNARROW;
+            break;
+        case GLFW_KEY_LEFT_CONTROL:
+        case GLFW_KEY_RIGHT_CONTROL:
+            key = KEY_FIRE;
+            break;
+        case GLFW_KEY_SPACE:
+            key = KEY_USE;
+            break;
+        case GLFW_KEY_LEFT_SHIFT:
+        case GLFW_KEY_RIGHT_SHIFT:
+            key = KEY_RSHIFT;
+            break;
+        default:
+            key = tolower(key);
+            break;
+    }
+
+    return key;
+}
+
+static void addKeyToQueue(int pressed, unsigned int keyCode) {
+    unsigned char key = convertToDoomKey(keyCode);
+
+    unsigned short keyData = (pressed << 8) | key;
+
+    s_KeyQueue[s_KeyQueueWriteIndex] = keyData;
+    s_KeyQueueWriteIndex++;
+    s_KeyQueueWriteIndex %= KEYQUEUE_SIZE;
+}
+
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    addKeyToQueue(action == GLFW_PRESS, key);
+}
 
 /**
  * Runs the Dear Imgui process used for realtime variable editing while the game is playing.
@@ -174,6 +234,8 @@ void DG_Init() {
     const char* glsl_version = "#version 330";
     ImGui_ImplGlfw_InitForOpenGL(mainWindow.window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    glfwSetKeyCallback(mainWindow.window, keyCallback);
 }
 
 /**
@@ -211,13 +273,25 @@ uint32_t DG_GetTicksMs() {
 }
 
 /**
- * I honestly do not know, gonna have to look into this.
+ * Magically handles doom input. Source code taken from `doomgeneric_sdl.c`.
  * @param pressed
  * @param doomKey
  * @return
  */
 int DG_GetKey(int* pressed, unsigned char* doomKey) {
-    return 0;
+    if (s_KeyQueueReadIndex == s_KeyQueueWriteIndex){
+        //key queue is empty
+        return 0;
+    }else{
+        unsigned short keyData = s_KeyQueue[s_KeyQueueReadIndex];
+        s_KeyQueueReadIndex++;
+        s_KeyQueueReadIndex %= KEYQUEUE_SIZE;
+
+        *pressed = keyData >> 8;
+        *doomKey = keyData & 0xFF;
+
+        return 1;
+    }
 }
 
 /**
