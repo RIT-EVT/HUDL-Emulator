@@ -163,7 +163,7 @@ public:
     /**
      * Emulation Variables
      */
-     
+
     /** The Emulation Screen Size */
     Sprite screen[screenSizeX][screenSizeY];
 private:
@@ -216,7 +216,14 @@ private:
     /**
      * Full Graphics Mode
      */
+
+     /** Whether the display should run in Full Graphics Mode or not */
     const bool fullGraphicsMode = true;
+
+    /**
+     * An internal bit map that is used for Full Graphics Mode.
+     * Represents all data displayed on the screen.
+     */
     uint8_t internalBitMap[1024] = {};
 };
 
