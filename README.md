@@ -21,8 +21,12 @@ Some changes are needed to Doomgeneric to allow it to interoperate with C++. The
 
 extern uint32_t* DG_ScreenBuffer;
 
+//Implement below functions for your platform
 #ifdef __cplusplus
 extern "C" {
+    void doomgeneric_Create(int argc, char **argv);
+    void doomgeneric_Tick();
+
     void DG_Init();
     void DG_DrawFrame();
     void DG_SleepMs(uint32_t ms);
@@ -31,6 +35,9 @@ extern "C" {
     void DG_SetWindowTitle(const char * title);
 };
 #else
+void doomgeneric_Create(int argc, char **argv);
+void doomgeneric_Tick();
+
 void DG_Init();
 void DG_DrawFrame();
 void DG_SleepMs(uint32_t ms);
@@ -39,6 +46,7 @@ int DG_GetKey(int* pressed, unsigned char* key);
 void DG_SetWindowTitle(const char * title);
 #endif
 #endif //DOOM_GENERIC
+
 ```
 
 ## Install Dependencies
