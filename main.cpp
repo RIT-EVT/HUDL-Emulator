@@ -15,6 +15,13 @@
 
 #include "LCD Emulator/LCD.hpp"
 
+#define BALL_SIZE 1
+#define NUMBER_OF_BALLS 10
+#define FRICTION 0.7f
+#define BALL_FRICTION 0.1f
+#define WALL_FRICTION 0.3f
+#define REST_GRACE 0.2f
+
 LCD lcd = LCD();
 
 void init() {
@@ -24,29 +31,97 @@ void init() {
     printf("OpenGL version supported %s\n", version);
 }
 
+struct Ball {
+    float x = 0;
+    float y = 0;
+    float velX = 0;
+    float velY = 0;
+
+    Ball() = default;
+
+    void process() {
+        x += velX;
+        y += velY;
+    }
+
+    void applyGravity(float xGravity, float yGravity) {
+        velY += yGravity * FRICTION;
+        velX += xGravity * FRICTION;
+    }
+
+    void applyBounds() {
+        if (x < 0) {
+            x = 0;
+            velX = -velX * WALL_FRICTION;
+        }
+        if (x > 128 - BALL_SIZE) {
+            x = 128 - BALL_SIZE;
+            velX = -velX * WALL_FRICTION;
+        }
+        if (y < 0) {
+            y = 0;
+            velY = -velY * WALL_FRICTION ;
+        }
+        if (y > 64 - BALL_SIZE) {
+            y = 64 - BALL_SIZE;
+            velY = -velY * WALL_FRICTION;
+        }
+        if (velX < REST_GRACE && velX > -REST_GRACE) {
+            velX = 0;
+        }
+        if (velY < REST_GRACE && velY > -REST_GRACE) {
+            velY = 0;
+        }
+    }
+
+    void clear(LCD& lcd) const {
+        for (int x1 = (int) x; x1 < (int) x + BALL_SIZE; x1 ++) {
+            for (int y1 = (int) y; y1 < (int) y + BALL_SIZE; y1 ++) {
+                lcd.setPixel(x1, y1, false);
+            }
+        }
+    }
+
+    void display(LCD& lcd) const {
+        for (int x1 = (int) x; x1 < (int) x + BALL_SIZE; x1 ++) {
+            for (int y1 = (int) y; y1 < (int) y + BALL_SIZE; y1 ++) {
+                lcd.setPixel(x1, y1, true);
+            }
+        }
+    }
+};
+
+Ball balls[NUMBER_OF_BALLS];
+int16_t gravity = 1;
+
 void update() {
-    const char* text =  R"( !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~)";
-    char* titles[9] = {
-            "B Voltage", "Speed", "RPM",
-            "Temp 1", "Temp 2", "Temp 3",
-            "Status 1", "Pre Stat", "Torque",
-    };
-    lcd.setDefaultSections(titles);
-    lcd.displaySectionHeaders();
+    // Clear the last ball
+    for(Ball& ball : balls) {
+        ball.clear(lcd);
 
-    char buffer[128] = {};
-    snprintf(buffer, (8), "%d", (12));
-    lcd.setTextForSection(0, buffer);
-    lcd.setTextForSection(1, "25 mph");
-    lcd.setTextForSection(2, "3000");
-    lcd.setTextForSection(3, "40 C");
-    lcd.setTextForSection(4, "44 C");
-    lcd.setTextForSection(5, "43 C");
-    lcd.setTextForSection(6, "ON");
-    lcd.setTextForSection(7, "Ready");
-    lcd.setTextForSection(8, "100 NM");
+        ball.applyGravity(0.3, 0.3);
+        ball.process();
+    }
 
-//    lcd.writeText(text, 0, 0, true);
+    for(int i = 0; i < NUMBER_OF_BALLS; i ++) {
+        for(int j = i + 1; j < NUMBER_OF_BALLS; j ++) {
+            if (balls[i].x == balls[j].x) {
+                balls[j].x --;
+                balls[j].velX = -balls[j].velX * BALL_FRICTION;
+            }
+            if (balls[j].y == balls[i].y) {
+                balls[j].y --;
+                balls[j].velY = -balls[j].velY * BALL_FRICTION;
+            }
+        }
+    }
+
+    for(Ball& ball : balls) {
+        ball.applyBounds();
+        ball.display(lcd);
+    }
+
+    lcd.updateDisplay();
 }
 
 int main() {
@@ -55,6 +130,13 @@ int main() {
 
     init();
     const int spriteSize = 10;
+
+    for(int i = 0; i < NUMBER_OF_BALLS; i ++) {
+        balls[i] = Ball();
+
+        balls[i].x = static_cast<float >((rand() % static_cast<int>(127 + 1)));
+        balls[i].y = static_cast<float>((rand() % static_cast<int>(64 + 1)));
+    }
 
     for(int x = 0; x < LCD::screenSizeX; x++) {
         for (int y = 0; y < LCD::screenSizeY; y++) {

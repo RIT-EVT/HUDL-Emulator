@@ -97,7 +97,7 @@ void LCD::driveColumn(uint8_t page, uint8_t colUp, uint8_t colLow, uint8_t data)
      */
 }
 
-void LCD::clearLCD(const uint8_t* bitMap) {
+void LCD::clearLCD() {
     uint8_t i, j;
     unsigned char page = 0xB0;
 
@@ -109,7 +109,6 @@ void LCD::clearLCD(const uint8_t* bitMap) {
         this->commandWrite(0x00);     //column address lower 4 bits + 0x00
         for (j = 0; j < 128; j++) {      //128 columns wide
             this->dataWrite(0x00); //write clear pixels
-            bitMap++;                   // Advance the bitmap pointer by one. This means we can just grab the last one the next loop.
         }
         page++;                         //after 128 columns, go to next page
     }
@@ -257,4 +256,38 @@ void LCD::setTextForSection(uint8_t section, const char* text) {
     sectionColumn += padding;
 
     writeText(text, sectionPage, sectionColumn, false);
+}
+
+void LCD::setPixel(uint8_t x, uint8_t y, bool on) {
+    if (x < LCD::screenSizeX && x >= 0 && y < LCD::screenSizeY && y >= 0)  {
+        int page = y / 8;
+        int yLeft = y % 8;
+        int oneDIndex = (page * LCD::screenSizeX) + x;
+
+        uint8_t bit = (internalBitMap[oneDIndex] >> yLeft) & 1U;
+        if(bit == 0 && on) {
+            internalBitMap[oneDIndex] ^= 1UL << yLeft; // Toggle a bit yLeft in the byte
+        } else if (bit == 1 && !on) {
+            internalBitMap[oneDIndex] ^= 1UL << yLeft; // Toggle a bit yLeft in the byte
+        }
+    }
+}
+
+void LCD::updateDisplay() {
+    clearLCD();
+    uint8_t *bitMap = internalBitMap;
+    uint8_t page = 0xB0;
+
+    commandWrite(0x40);//Display start address + 0x40
+    for (uint8_t i = 0; i < 8; i++) { //64 pixel display / 8 pixels per page = 8 pages
+        commandWrite(page);       //send page address
+        commandWrite(0x10);       //column address upper 4 bits + 0x10
+        commandWrite(0x00);       //column address lower 4 bits + 0x00
+        for (uint8_t j = 0; j < 128; j++) {         //128 columns wide
+            dataWrite(*bitMap);  //write pixels from bitmap
+            bitMap++;                       // Advance the bitmap pointer by one. This means we can just grab the last one the next loop.
+        }
+        page++; //after 128 columns, go to next page
+    }
+    commandWrite(DISPLAYON);
 }

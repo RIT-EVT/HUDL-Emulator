@@ -8,6 +8,17 @@
 #ifndef HUDLEMULATOR_LCD_HPP
 #define HUDLEMULATOR_LCD_HPP
 
+#define ADCSELECT 0xA0
+#define DISPLAYOFF 0xAE
+#define COMDIRSCAN 0xC8
+#define LCDBIASET 0xA2
+#define POWERCONTROLSET 0x2F
+#define RESRATIOSET 0x26
+#define ELECTRONICVOLCOMMAND 0x81
+#define ELECTRONICVOLVALUE 0x11
+#define DISPLAYON 0xAF
+#define DISPLAYOFF 0xAE
+
 #include "BitmapFont.hpp"
 #include "../GUI/Sprite.hpp"
 
@@ -49,10 +60,8 @@ public:
 
     /**
      * Clears the LCD, changes are mirrored in the bitmap
-     *
-     * @param[in] bitMap Bitmap to be displayed
      */
-    void clearLCD(const uint8_t* bitMap);
+    void clearLCD();
 
     void clearArea(uint8_t width, uint8_t height, uint8_t page, uint8_t column);
 
@@ -72,6 +81,21 @@ public:
 
     /// initializes the LCD for operation (must be called to use the LCD)
     void initLCD();
+
+
+    /**
+     * Set a certain pixel in the `internalBitMap` to on or off.
+     * @param x the x coordinate of the pixel.
+     * @param y the y coordinate of the pixel.
+     * @param on whether the pixel is on or not. (True = ON, False = OFF)
+     */
+    void setPixel(uint8_t x, uint8_t y, bool on);
+
+    /**
+     * Updates the actual LCD registers with the data in `internalBitMap`.
+     * Must be called for the Full Graphics Mode to actually display anything.
+     */
+    void updateDisplay();
 private:
     static const uint8_t numberOfSections = 9;
     static const uint8_t sectionsPerRow = 3;
@@ -98,6 +122,9 @@ private:
             "NULL", "NULL", "NULL",
             "NULL", "NULL", "NULL",
     };
+
+    uint8_t internalBitMap[1024] = {};
+
 };
 
 #endif //HUDLEMULATOR_LCD_HPP
